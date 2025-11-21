@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Surpresa ✨</title>
+  <style>
+    :root{
+      --bg:#FFF6F9;
+      --card:#ffffff;
+      --accent:#FF9AA2;
+      --accent-2:#FFB7B2;
+      --text:#333;
+      --muted:#7a6b6f;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui;
+      background: linear-gradient(180deg,var(--bg), #FFF0F4);
+      min-height:100vh;
+      overflow:hidden;
+      position:relative;
+    }
+
+    /* Botões aleatórios na tela */
+    .click-btn{
+      position:absolute;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:white;
+      border:none;
+      border-radius:12px;
+      padding:12px 18px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(255,145,162,0.18);
+      transition:transform .12s ease;
+    }
+    .click-btn:active{ transform:scale(0.95); }
+
+    /* Card final com poema */
+    .card{
+      display:none;
+      width:100%;
+      max-width:600px;
+      background:var(--card);
+      border-radius:18px;
+      box-shadow:0 12px 30px rgba(255,145,162,0.12);
+      padding:28px;
+      position:absolute;
+      top:50%; left:50%;
+      transform:translate(-50%,-50%);
+      animation:fade .6s ease;
+    }
+
+    @keyframes fade{
+      from{opacity:0; transform:translate(-50%,-48%);} 
+      to{opacity:1; transform:translate(-50%,-50%);} 
+    }
+
+    h1{
+      margin:0 0 12px;
+      color:var(--accent);
+      font-size:22px;
+      text-align:center;
+    }
+
+    #poema{
+      font-size:16px;
+      line-height:1.6;
+      white-space:pre-wrap;
+      color:var(--text);
+      background: linear-gradient(90deg, rgba(255,154,162,0.12), rgba(255,183,178,0.06));
+      padding:18px;
+      border-radius:14px;
+      min-height:200px;
+    }
+
+    audio{ display:none; }
+  </style>
+</head>
+<body>
+
+  <!-- Música suave -->
+  <audio id="music" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a6e3c0bb2.mp3?filename=calm-melody-110744.mp3"></audio>
+
+  <!-- Poema final -->
+  <div class="card" id="card">
+    <h1>Para Você 💖</h1>
+    <div id="poema"></div>
+  </div>
+
+  <script>
+    const totalClicks = 8; // quantos cliques até liberar o poema
+    let clicks = 0;
+
+    const poemText = `Quando você chegou,\nmeu coração fez um estrondo tão alto\nque até o silêncio parou para ouvir.\n\nFoi como se todas as portas se abrissem de uma vez,\ncomo se as janelas gritassem teu nome\ne o mundo inteiro piscasse em alerta, avisando: "ela chegou."\n\nE desde então, nada nem ninguém importa tanto assim.\nEu vou te cuidar com a força que tenho\ne com a que ainda vou descobrir que possuo.\n\nNenhuma sinfonia do ano tocou tão fundo quanto a tua.\nNenhuma nota me atravessou tão bonita.\n\nE se depender de mim,\neu cruzo mar sem navio,\ndesbravo floresta sem bússola,\nencaro noite sem lua — tudo só pra ter você comigo.\n\nPorque o barulho que você fez aqui dentro\nnão foi apenas chegada...`;
+
+    // cria botão em posição aleatória
+    function createButton(){
+      const btn = document.createElement('button');
+      btn.className = 'click-btn';
+      btn.textContent = 'Clique aqui';
+
+      const x = Math.random() * (window.innerWidth - 120);
+      const y = Math.random() * (window.innerHeight - 60);
+
+      btn.style.left = x + 'px';
+      btn.style.top = y + 'px';
+
+      btn.onclick = ()=>{
+        clicks++;
+        btn.remove();
+
+        if(clicks >= totalClicks){
+          showPoem();
+        } else {
+          createButton();
+        }
+      }
+
+      document.body.appendChild(btn);
+    }
+
+    // digitação letra por letra
+    function typeWriter(text, element, speed = 30){
+      let i = 0;
+      function typing(){
+        if(i < text.length){
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, speed);
+        }
+      }
+      typing();
+    }
+
+    // mostrar poema + música
+    function showPoem(){
+      document.getElementById('card').style.display = 'block';
+      const poemEl = document.getElementById('poema');
+      typeWriter(poemText, poemEl);
+      document.getElementById('music').play();
+    }
+
+    // iniciar com primeiro botão
+    createButton();
+  </script>
+</body>
+</html>
